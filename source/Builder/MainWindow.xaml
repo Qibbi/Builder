@@ -1,0 +1,69 @@
+﻿<Window x:Class="Builder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Builder"
+        mc:Ignorable="d"
+        Title="Builder"
+        Loaded="WindowLoaded"
+        Closing="WindowClosing">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.2*" MinWidth="250" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="3,0">
+            <GroupBox Header="Project" HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="GridProject" />
+                    <GroupBox Header="Build Options" Grid.Row="1">
+                        <Grid x:Name="GridBuildOptions" />
+                    </GroupBox>
+                    <Button Content="Compile" Click="CompileClick" Margin="0,3" Grid.Row="2" />
+                </Grid>
+            </GroupBox>
+        </ScrollViewer>
+        <GridSplitter Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />
+        <TabControl x:Name="TabControlLog" Grid.Column="2">
+            <TabItem Header="Build Log">
+                <RichTextBox x:Name="RichTextBoxLog" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Margin="3" />
+            </TabItem>
+            <TabItem Header="Error Log">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible">
+                    <TreeView x:Name="TreeViewErrorLog" ItemsSource="{Binding Children}" Margin="3">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                <EventSetter Event="MouseDoubleClick" Handler="ErrorLogDoubleClick" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type local:TreeViewItemCategoryViewModel}" ItemsSource="{Binding Children}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding Icon}" Width="16" Height="16" VerticalAlignment="Center" Grid.Column="0" />
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Grid.Column="1" />
+                                </Grid>
+                            </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type local:TreeViewItemErrorViewModel}" ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                            </HierarchicalDataTemplate>
+                            <DataTemplate DataType="{x:Type local:TreeViewItemErrorStackTraceViewModel}">
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
